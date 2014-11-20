@@ -1,0 +1,24 @@
+{
+  "name": "jest-jsx-vs-create-factory",
+  "version": "0.0.0",
+  "description": "tests to compare jsx and createFactory",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "",
+  "license": "ISC",
+  "devDependencies": {
+    "jest-cli": "^0.1.18",
+    "react-tools": "^0.12.1"
+  },
+  "dependencies": {
+    "react": "^0.12.1"
+  },
+  "jest": {
+    "scriptPreprocessor": "preprocessor.js",
+    "unmockedModulePathPatterns": [
+      "node_modules/react"
+    ]
+  }
+}
