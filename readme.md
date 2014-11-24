@@ -68,3 +68,5 @@ expect(TestUtils.scryRenderedDOMComponentsWithTag(instance, 'submodule').length)
 expect(SubModule).toBeCalledWith({ item: "foo" });
 expect(SubModule.lastCalledWith({ item: "bar" });
 ```
+
+* For some reason, I had a lot of mocking sub-modules that had the `.jsx` extension. Even when I tried setting jest `config.moduleFileExtensions: ["jsx", "js", "json"]` in `package.json`. Because I didn't want my `preprocessor.js` to transform every file as there are a number of non-jsx files in my library, I wanted a unique extension for the `.jsx` files. I ended up using `some-file.jsx.js`. I haven't written a test to illustrate this yet.
