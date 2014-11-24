@@ -9,7 +9,8 @@ describe('comparing jsx vs .createFactory() vs .createElement() when using TestU
 		React = require('react/addons');
 		TestUtils = React.addons.TestUtils;
 
-		Child = TestUtils.mockComponent(require('../lib/child'), 'mymockchild');
+		Child = require('../lib/child');
+		TestUtils.mockComponent(Child, 'mymockchild');
 	});
 	describe('when using jsx only', function() {
 		var Parent, instance;
@@ -26,6 +27,13 @@ describe('comparing jsx vs .createFactory() vs .createElement() when using TestU
 		});
 		it('can capture props passed to child component', function() {
 			expect(instance.refs.child.props).toEqual({ foo: "foo value", children: "children value" });
+		});
+		it('can capture the props passed to mock component', function() {
+			expect(Child).lastCalledWith({ foo: "foo value", children: "children value" });
+		});
+		it('cannot capture all props to element using .findRenderedDOMComponentWithTag (or .scryRenderedDOMComponentsWithTag)', function() {
+			var child = TestUtils.findRenderedDOMComponentWithTag(instance, 'mymockchild');
+			expect(child.props).toEqual({ foo: "foo value", children: "children value" });
 		});
 	});
 	describe('when using parent that uses .createFactory()', function() {

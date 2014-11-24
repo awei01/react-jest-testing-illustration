@@ -47,14 +47,24 @@ In any of the above cases, your refs are not going to work. You can work around 
 
 # Solution #
 
-After flailing around for a bit, I've found a solution that allows you to test sub-modules as mocks. There are still some Gothcas! to watch out for, though.
+After flailing around for a bit, I've found a solution that allows you to test sub-modules as mocks. There are still some Gothcas! to watch out for, though. Please note that underlying React/Jest APIs may change so the following may end up breaking. I've not seen an example of a facebook test file but would be really interested in seeing one if someone knows of one that is publicly available.
 
 * Use JSX. It seems that using JSX is fairly future proof and will be a mainstay for React development, so that's a plus.
 
-* When testing a React module that uses sub-modules that you want to mock, use `TestUtils.mockModule(require('../my-sub-module'));`. I'd also suggest passing a second string parameter with some fake tag name that will uniquely identify your sub module, e.g. `TestUtils.mockModule(require('../my-sub-module'), 'mysubmoduletag');`.
+* When testing a React module that uses sub-modules that you want to mock, use `TestUtils.mockModule(require('../my-sub-module'));`. I'd also suggest passing a second string parameter with some fake tag name that will uniquely identify your sub module, e.g. `TestUtils.mockModule(require('../my-sub-module'), 'mysubmoduletag');`. If you want access to the sub-module's constructor, you'll have to do something like: `var SubModule = require('../my-sub-module'); TestUtils.mockModule(SubModule, 'mysubmodule');` This way, you can assert props passed to the item if you're using the sub-module more than once and cannot use refs to isolate the instance (as in rendering an array of items using a sub-module)
 
 * The `refs` you've defined from the parent module will properly resolve to their respective sub-modules.
 
 * To locate a collection of your mocked sub-modules, use `TestUtils.scryRenderedDomComponentsWithTag(component, 'tagname');`. This is why I suggest using a unique fake tag when you're using `TestUtils.mockModule()`
 
-* You can assert that props are properly passed to your sub-module's rendered element by grabbing the `.props` from it.
+* If your parent has one ref pointing to the sub-module, you can assert that props are properly passed to your sub-module's rendered element by grabbing the `.props` from it: `var submodule = parent.refs.foo; console.log(submodule.props);`. However, if you have multiple sub-modules (because you're looping through an array or something), you'll have to test that props are correctly passed a little differently:
+
+```
+var SubModule = require('../lib/sub-module');
+TestUtils.mockComponent(SubModule, 'submodule');
+var instance = TestUtils.renderIntoDocument(<Parent items={ ['foo', 'bar'] }/>);
+// test that a sub-module is rendered for each item
+expect(TestUtils.scryRenderedDOMComponentsWithTag(instance, 'submodule').length).toBe(2);
+expect(SubModule).toBeCalledWith({ item: "foo" });
+expect(SubModule.lastCalledWith({ item: "bar" });
+```
