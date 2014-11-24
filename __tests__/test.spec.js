@@ -9,8 +9,6 @@ describe('comparing jsx vs .createFactory() vs .createElement()', function() {
 		React = require('react/addons');
 		TestUtils = React.addons.TestUtils;
 
-		ParentCreateFactory = require('../lib/parent-using-create-factory');
-		ParentCreateElement = require('../lib/parent-using-create-element');
 		Child = require('../lib/child');
 	});
 	describe('when using jsx only', function() {
