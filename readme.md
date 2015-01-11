@@ -69,4 +69,4 @@ expect(SubModule).toBeCalledWith({ item: "foo" });
 expect(SubModule.lastCalledWith({ item: "bar" });
 ```
 
-* For some reason, I had a lot of mocking sub-modules that had the `.jsx` extension. Even when I tried setting jest `config.moduleFileExtensions: ["jsx", "js", "json"]` in `package.json`. Because I didn't want my `preprocessor.js` to transform every file as there are a number of non-jsx files in my library, I wanted a unique extension for the `.jsx` files. I ended up using `some-file.jsx.js`. I haven't written a test to illustrate this yet.
+* The jest config for picking up module extensions didn't seem to work for me: `config.moduleFileExtensions: ["jsx", "js", "json"]` in `package.json` still did not see a `.jsx` extensioned file as a require-able module. Because I didn't want my `preprocessor.js` to transform every file as there are a number of non-jsx files in my library, I wanted a unique extension for the `.jsx` files. I ended up using `some-file.jsx.js` so that i can match against `/\.jsx\js$/` to transform only those files and save some time while running tests. I haven't written a test to illustrate this yet.
